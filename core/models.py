@@ -77,7 +77,7 @@ except Exception as e:
 def classify_image(image_pil) -> bool:
     """Return True if the image is arugula, False for wheat."""
     if classificator_model is None:
-        return False
+        raise RuntimeError("Classification model not loaded.")
     cls_results = classificator_model(image_pil, verbose=False)
     best_class_id = cls_results[0].probs.top1
     best_class_name = cls_results[0].names[best_class_id].lower()
