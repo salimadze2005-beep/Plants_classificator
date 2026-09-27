@@ -1,41 +1,43 @@
 # 🌱 Plants Verification Size (PvZ)
 
-**Computer Vision / Applied ML project for automated plant analysis.**
+**Computer Vision / Applied ML проект для автоматического анализа фотографий растений.**
 
-PvZ recognizes the plant type (**wheat / arugula**), segments plant parts and converts segmentation masks into practical biometric measurements such as area and estimated size.
+Система определяет тип растения (**пшеница / рукола**), выполняет сегментацию его частей и по полученным маскам рассчитывает прикладные биометрические показатели: площадь и оценку линейных размеров.
 
-> Portfolio focus: end-to-end CV pipeline, model training and validation, segmentation, image post-processing, metric calculation and integration into a FastAPI application.
+> Основной фокус проекта: end-to-end CV pipeline — от классификации и сегментации до постобработки изображений, расчёта метрик и интеграции моделей в FastAPI-приложение.
 
-## What the project does
+## Что делает проект
 
-Manual plant measurements are slow and difficult to scale. PvZ automates the main workflow:
+Ручное измерение морфологических характеристик растений занимает много времени и плохо масштабируется. PvZ автоматизирует основной процесс:
 
-1. Upload a plant image through the web interface.
-2. Classify the image as wheat or arugula.
-3. Select the corresponding segmentation model.
-4. Segment plant parts such as root, stem and leaf.
-5. Calculate area and approximate linear dimensions from masks.
-6. Save, visualize and export the analysis result.
+1. Пользователь загружает фотографию растения через веб-интерфейс.
+2. Классификатор определяет тип растения: пшеница или рукола.
+3. Система автоматически выбирает подходящую модель сегментации.
+4. Модель сегментирует отдельные части растения: корень, стебель и листья.
+5. По сегментационным маскам рассчитываются площадь и примерные линейные размеры.
+6. Результат визуализируется, сохраняется в базе данных и может быть экспортирован.
 
-## My role — ML / Computer Vision Engineer
+## Моя роль — ML / Computer Vision Engineer
 
-The project was developed by a team of three. I was responsible for the **ML/CV part**:
+Проект разрабатывался командой из трёх человек. Я отвечал за **ML/CV-часть системы**:
 
-- built the **classification → model selection → segmentation** pipeline;
-- trained and evaluated **YOLO** and **U-Net** segmentation models;
-- implemented inference and post-processing logic;
-- calculated biometric metrics from segmentation masks;
-- worked with pixel-to-millimeter conversion and calibration logic;
-- validated models using **Precision, Recall, mAP and IoU/mIoU**;
-- integrated the CV pipeline with the backend.
+- построил pipeline **classification → выбор модели → segmentation**;
+- обучал и валидировал модели сегментации **YOLO** и **U-Net**;
+- реализовал inference и постобработку результатов моделей;
+- рассчитывал биометрические показатели по сегментационным маскам;
+- работал с переводом размеров из пикселей в миллиметры и логикой калибровки;
+- оценивал качество моделей по **Precision, Recall, mAP и IoU/mIoU**;
+- интегрировал CV pipeline с backend-частью приложения.
 
-This repository demonstrates the complete applied CV workflow: **model preparation → training → validation → error analysis → inference → integration into an application**.
+Проект показывает полный цикл прикладной задачи Computer Vision:
 
-## Model results
+**подготовка модели → обучение → валидация → анализ ошибок → inference → интеграция в приложение**.
 
-### YOLO segmentation
+## Результаты моделей
 
-| Metric | Wheat | Arugula |
+### YOLO Segmentation
+
+| Метрика | Пшеница | Рукола |
 |---|---:|---:|
 | Box Precision | 0.873 | 0.591 |
 | Box Recall | 0.875 | 0.557 |
@@ -45,54 +47,55 @@ This repository demonstrates the complete applied CV workflow: **model preparati
 | Mask mAP@50 | **0.826** | **0.409** |
 | Mask mAP@50–95 | 0.479 | 0.206 |
 
-### U-Net segmentation
+### U-Net Segmentation
 
-| Metric / class | Wheat | Arugula |
+| Метрика / класс | Пшеница | Рукола |
 |---|---:|---:|
-| Best mIoU | **0.8124** | **0.6083** |
+| Лучший mIoU | **0.8124** | **0.6083** |
 | Background IoU | 0.994 | 0.992 |
 | Root IoU | 0.742 | 0.276 |
 | Stem IoU | 0.881 | 0.614 |
 | Leaf IoU | 0.635 | 0.417 |
 
-The metrics show an important practical detail: segmentation quality differs significantly by plant type and class, so the system keeps model-specific processing and explicit validation metrics instead of treating inference as a black box.
+Результаты показывают важную практическую особенность проекта: качество сегментации заметно отличается в зависимости от типа растения и класса объекта. Поэтому в системе используются отдельные модели и явно контролируются метрики качества, а inference не рассматривается как «чёрный ящик».
 
-## Architecture
+## Архитектура
 
 ```text
-Image
-  │
-  ▼
-Plant classifier
-  │
-  ├── Wheat ─────► Wheat segmentation model
-  │
-  └── Arugula ───► Arugula segmentation model
-                       │
-                       ▼
-              Mask post-processing
-                       │
-                       ▼
-             Biometric calculations
-                       │
-                       ▼
-          Visualization / DB / export
+Изображение
+    │
+    ▼
+Классификатор растения
+    │
+    ├── Пшеница ─────► модель сегментации пшеницы
+    │
+    └── Рукола ──────► модель сегментации руколы
+                            │
+                            ▼
+                    Постобработка масок
+                            │
+                            ▼
+                 Расчёт биометрических
+                       показателей
+                            │
+                            ▼
+              Визуализация / БД / экспорт
 ```
 
-The backend supports YOLO-based segmentation, U-Net segmentation and a combined processing mode.
+Backend поддерживает сегментацию на основе YOLO, U-Net и комбинированный режим обработки.
 
-## Tech stack
+## Технологии
 
-**ML / Computer Vision**
+**Machine Learning / Computer Vision**
 - Python
 - PyTorch
 - Ultralytics YOLO
-- U-Net via `segmentation-models-pytorch`
+- U-Net / `segmentation-models-pytorch`
 - OpenCV
 - NumPy
 - Albumentations
 
-**Backend / Application**
+**Backend / приложение**
 - FastAPI
 - Uvicorn
 - Jinja2
@@ -101,44 +104,44 @@ The backend supports YOLO-based segmentation, U-Net segmentation and a combined 
 
 **Engineering**
 - Git / Git LFS
-- modular inference pipeline
-- image post-processing
-- CSV export
-- analysis history in SQLite
+- модульный inference pipeline
+- постобработка изображений
+- экспорт результатов в CSV
+- хранение истории анализов в SQLite
 
-## Repository structure
+## Структура репозитория
 
 ```text
 .
 ├── app/
-│   ├── main.py              # FastAPI routes and application flow
-│   ├── database.py          # SQLite persistence
-│   ├── templates/           # Web UI templates
-│   └── static/              # CSS and JavaScript
+│   ├── main.py              # FastAPI routes и основной flow приложения
+│   ├── database.py          # Работа с SQLite
+│   ├── templates/           # Шаблоны веб-интерфейса
+│   └── static/              # CSS и JavaScript
 │
 ├── core/
-│   ├── models.py            # Model loading and classification
+│   ├── models.py            # Загрузка моделей и классификация
 │   ├── ml.py                # Segmentation / inference pipeline
-│   ├── metrics.py           # Area and size calculations
-│   ├── calibrate.py         # Camera / scale calibration experiments
-│   ├── constants.py         # Classes, mappings and scale parameters
-│   └── utils.py             # Image processing and visualization helpers
+│   ├── metrics.py           # Расчёт площади и размеров
+│   ├── calibrate.py         # Эксперименты с калибровкой масштаба
+│   ├── constants.py         # Классы, mappings и параметры
+│   └── utils.py             # Обработка изображений и визуализация
 │
-├── models/                  # Model references / Git LFS pointers
+├── models/                  # Ссылки на модели / Git LFS pointers
 ├── requirements.txt
 └── README.md
 ```
 
-## Local run
+## Запуск проекта
 
-### 1. Clone
+### 1. Клонировать репозиторий
 
 ```bash
 git clone https://github.com/salimadze2005-beep/Plants_classificator.git
 cd Plants_classificator
 ```
 
-### 2. Create a virtual environment
+### 2. Создать виртуальное окружение
 
 ```bash
 python -m venv .venv
@@ -156,17 +159,17 @@ Linux / macOS:
 source .venv/bin/activate
 ```
 
-### 3. Install dependencies
+### 3. Установить зависимости
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Add model weights
+### 4. Добавить веса моделей
 
-The source project contains **Git LFS pointer files** for the trained `.pt` / `.pth` models rather than the binary weight files themselves.
+В исходном проекте файлы `.pt` и `.pth` представлены как **Git LFS pointers**, а не как сами бинарные веса моделей.
 
-For inference, the corresponding trained weights must be available at the expected paths:
+Для запуска inference необходимо разместить обученные веса по ожидаемым путям:
 
 ```text
 models/classificator.pt
@@ -176,27 +179,37 @@ models/U-Net/rugola_v3_best.pth
 models/U-Net/пшеница_4класса.pth
 ```
 
-### 5. Start the application
+### 5. Запустить приложение
 
 ```bash
 uvicorn app.main:app --port 8000 --reload
 ```
 
-Open:
+После запуска приложение будет доступно по адресу:
 
 ```text
 http://127.0.0.1:8000
 ```
 
-## Why this project is relevant to CV/ML roles
+## Что показывает этот проект
 
-The repository shows more than model training. It covers the path from **classification and segmentation to application-level inference**: routing between plant classes, multiple segmentation architectures, mask post-processing, real-world metric calculation, persistence and a web API/UI.
+Репозиторий демонстрирует не только обучение моделей, но и полный путь от ML-модели до рабочего приложения:
 
-For a technical review, start with:
-- [`core/ml.py`](core/ml.py) — inference pipeline;
-- [`core/models.py`](core/models.py) — model loading and classification;
-- [`core/metrics.py`](core/metrics.py) — biometric calculations.
+- классификация входного изображения;
+- автоматический выбор модели;
+- instance segmentation;
+- использование нескольких архитектур сегментации;
+- постобработка масок;
+- расчёт прикладных физических показателей;
+- интеграция ML-логики с backend;
+- сохранение и экспорт результатов.
 
-## License
+Для технического просмотра рекомендую начать с:
 
-Apache License 2.0. See [`LICENSE`](LICENSE).
+- [`core/ml.py`](core/ml.py) — основной inference pipeline;
+- [`core/models.py`](core/models.py) — загрузка моделей и классификация;
+- [`core/metrics.py`](core/metrics.py) — расчёт биометрических показателей.
+
+## Лицензия
+
+Проект распространяется по лицензии Apache License 2.0. Подробнее — в файле [`LICENSE`](LICENSE).
