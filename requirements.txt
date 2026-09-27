@@ -1,0 +1,18 @@
+aiogram>=3.4.0
+python-dotenv>=1.0.0
+ultralytics>=8.1.0
+scikit-image
+scipy
+matplotlib
+fastapi
+uvicorn
+python-multipart
+jinja2
+segmentation-models-pytorch
+timm
+--extra-index-url https://download.pytorch.org/whl/cu121
+
+torch
+torchvision
+torchaudio
+albumentations
